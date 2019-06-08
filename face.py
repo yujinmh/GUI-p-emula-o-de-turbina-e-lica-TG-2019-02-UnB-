@@ -1,16 +1,13 @@
-#!/usr/bin/env python3
 from tkinter import *
-
-
 import tkinter.messagebox
 
 def exitt():
     exit()
 
 def printt():
-    print("BAUD VALUE = ", int(baud.get()))
+    print("\nBAUD VALUE = ", int(baud.get()))
     print("PARIDADE = ", int(pary.get()))
-    print("CONFIGURAÇÃO = ", str(conf.get()))
+    print("CONFIGURACAO = ", str(conf.get()))
 
 def add():
     aux = str(conf.get())
@@ -23,92 +20,121 @@ def add():
     elif aux == 'RAJADA':
         rajada()
 
+def peguei():
+
+    global count
+    tipo = str(conf.get())
+    t = str(tempo.get())
+    a = str(ampl.get())
+    v = str(vel_max.get())
+    print("Tipo = ", tipo, " ", t, " ", a, " ", v, " contador = ", count.get())
+    count.set(count.get()+1)
+    # lista = lista.add(tipo,t,a,v)
+    label = Label(root,text= "testando").place(x=25, y=340)
+
+# VENTOS #
+
 def brisa():
-    wBrisa = Tk()
+    wBrisa = Toplevel()
     wBrisa.title("BRISA")
-    wBrisa.geometry("300x200")
+    wBrisa.geometry("300x120+500+300")
+    wBrisa.resizable(width=False, height=False)
     l1 = Label(wBrisa, text= "Duração: ").place(x=20, y=20)
-    e1 = Entry(wBrisa, textvar= duracao).place(x=150, y=20)  
-    
-    b0=Button(wBrisa, text="Ok", width= 8, height=1 ,fg='black', bg= 'gray', relief=GROOVE, font=("arial", 13, "italic"), command=listar)
-    b0.place(x=60, y=120)
-    b1=Button(wBrisa, text="Cancel", width= 8, height=1 ,fg='black', bg= 'gray', relief=GROOVE, font=("arial", 13, "italic"), command=wBrisa.destroy)
-    b1.place(x=180, y=120)
+    e1 = Entry(wBrisa, textvar= tempo).place(x=150, y=20)
+    # w = Spinbox(wBrisa, from_=0, to=10).place(x=150, y=20)
+
+    b0=Button(wBrisa, text="Salvar", width= 8, height=1 ,fg='black', bg= 'light blue', relief=GROOVE, font=("arial", 13, "italic"), command=peguei)
+    b0.place(x=85, y=70)
+    b1=Button(wBrisa, text="Sair", width= 8, height=1 ,fg='black', bg= 'light blue', relief=GROOVE, font=("arial", 13, "italic"), command=wBrisa.destroy)
+    b1.place(x=185, y=70)
 
 def ripple():
-    wRipple = Tk()
+    wRipple = Toplevel()
     wRipple.title("RIPPLE")
-    wRipple.geometry("300x200")
+    wRipple.geometry("300x160+500+300")
+    wRipple.resizable(width=False, height=False)
     l1 = Label(wRipple, text= "Amplitude: ").place(x=20,y=20)
     l2 = Label(wRipple, text= "Duração: ").place(x=20, y=60)
-    e1 = Entry(wRipple).place(x=150, y=20)
-    e2 = Entry(wRipple).place(x=150, y=60)
-    b0=Button(wRipple, text="Ok", width= 8, height=1 ,fg='black', bg= 'gray', relief=GROOVE, font=("arial", 13, "italic"))
-    b0.place(x=60, y=120)
-    b1=Button(wRipple, text="Cancel", width= 8, height=1 ,fg='black', bg= 'gray', relief=GROOVE, font=("arial", 13, "italic"), command=wRipple.destroy)
-    b1.place(x=180, y=120)
+    e1 = Entry(wRipple, textvar= ampl).place(x=150, y=20)
+    e2 = Entry(wRipple, textvar= tempo).place(x=150, y=60)
+    b0=Button(wRipple, text="Ok", width= 8, height=1 ,fg='black', bg= 'light blue', relief=GROOVE, font=("arial", 13, "italic"), command=peguei)
+    b0.place(x=85, y=100)
+    b1=Button(wRipple, text="Cancel", width= 8, height=1 ,fg='black', bg= 'light blue', relief=GROOVE, font=("arial", 13, "italic"), command=wRipple.destroy)
+    b1.place(x=185, y=100)
 
 def rajada():
-    wRajada = Tk()
+    wRajada = Toplevel()
     wRajada.title("RAJADA")
-    wRajada.geometry("300x200")
+    wRajada.geometry("300x160+500+300")
+    wRajada.resizable(width=False, height=False)
     l1 = Label(wRajada, text= "Velocidade final: ").place(x=20,y=20)
     l2 = Label(wRajada, text= "Duração: ").place(x=20, y=60)
-    e1 = Entry(wRajada).place(x=150, y=20)
-    e2 = Entry(wRajada).place(x=150, y=60)
-    b0=Button(wRajada, text="Ok", width= 8, height=1 ,fg='black', bg= 'gray', relief=GROOVE, font=("arial", 13, "italic"))
-    b0.place(x=60, y=120)
-    b1=Button(wRajada, text="Cancel", width= 8, height=1 ,fg='black', bg= 'gray', relief=GROOVE, font=("arial", 13, "italic"), command=wRajada.destroy)
-    b1.place(x=180, y=120)
+    e1 = Entry(wRajada, textvar= vel_max).place(x=150, y=20)
+    e2 = Entry(wRajada, textvar= tempo).place(x=150, y=60)
+    b0=Button(wRajada, text="Ok", width= 8, height=1 ,fg='black', bg= 'light blue', relief=GROOVE, font=("arial", 13, "italic"), command = peguei)
+    b0.place(x=85, y=100)
+    b1=Button(wRajada, text="Cancel", width= 8, height=1 ,fg='black', bg= 'light blue', relief=GROOVE, font=("arial", 13, "italic"), command=wRajada.destroy)
+    b1.place(x=185, y=100)
 
 def rampa():
-    wRampa = Tk()
+    wRampa = Toplevel()
     wRampa.title("RAMPA")
-    wRampa.geometry("300x200")
+    wRampa.geometry("300x160+500+300")
+    wRampa.resizable(width=False, height=False)
     l1 = Label(wRampa, text= "Velocidade final: ").place(x=20,y=20)
     l2 = Label(wRampa, text= "Duração: ").place(x=20, y=60)
-    e1 = Entry(wRampa).place(x=150, y=20)
-    e2 = Entry(wRampa).place(x=150, y=60)
-    b0=Button(wRampa, text="Ok", width= 8, height=1 ,fg='black', bg= 'gray', relief=GROOVE, font=("arial", 13, "italic"), command= listar)
-    b0.place(x=60, y=120)
-    b1=Button(wRampa, text="Cancel", width= 8, height=1 ,fg='black', bg= 'gray', relief=GROOVE, font=("arial", 13, "italic"), command=wRampa.destroy)
-    b1.place(x=180, y=120)
-
-def listar():
-    aux = int(duracao.get())
-    print (aux)
+    e1 = Entry(wRampa, textvar= vel_max).place(x=150, y=20)
+    e2 = Entry(wRampa, textvar= tempo).place(x=150, y=60)
+    b0=Button(wRampa, text="Ok", width= 8, height=1 ,fg='black', bg= 'light blue', relief=GROOVE, font=("arial", 13, "italic"), command=peguei)
+    b0.place(x=85, y=100)
+    b1=Button(wRampa, text="Cancel", width= 8, height=1 ,fg='black', bg= 'light blue', relief=GROOVE, font=("arial", 13, "italic"), command=wRampa.destroy)
+    b1.place(x=185, y=100)
 
 ###################################### INÍCIO ######################################
 
 root=Tk()
-root.geometry("600x600")
+
+w_soft = 570
+h_soft = 600
+screen_w = root.winfo_screenwidth()
+screen_h = root.winfo_screenheight()
+x_pos = (screen_w/2)-(w_soft/2)
+y_pos = (screen_h/2)-(h_soft/2)
+
+root.geometry("%dx%d+%d+%d" % (w_soft, h_soft, x_pos, y_pos))
+# root.geometry("600x600+480+100")
 root.title("Emulador de vento")
+root.resizable(width=False, height=False)
+# root.configure(bg = "#94d42b")
 
 # VARIABLES #
+count = IntVar()
 baud = IntVar()
 pary = IntVar()
-duracao = IntVar()
 conf = StringVar()
 vel_ini = IntVar()
 vel_max = IntVar()
-tempo = IntVar()
+ampl = StringVar()
+tempo = StringVar()
 
 # LABELS #
-label1 = Label(root,text="Gráfico", font=("arial", 12, "bold")).place(x=20, y=20)
-label2 = Label(root,text="BaudRate (bit/s)", font=("arial", 12, "bold")).place(x=300, y=20)
-label3 = Label(root,text="Histórico", font=("arial", 12, "bold")).place(x=20, y=320)
-label4 = Label(root,text="Paridade", font=("arial", 12, "bold")).place(x=300, y=150)
+label1 = Label(root,text="Gráfico", anchor= NW, bd= 4, relief="groove", width=22, height= 11, font=("arial", 12, "bold")).place(x=23, y=20)
+label2 = Label(root,text="BaudRate (bit/s)", anchor= NW, bd= 4, relief="groove", width=22, height= 6, font=("arial", 12, "bold")).place(x=300, y=20)
+label3 = Label(root,text="Descrição", anchor= NW, bd= 4, relief="groove", width=22, height= 6, font=("arial", 12, "bold")).place(x=23, y=320)
+label3 = Label(root,text="Histórico", anchor= NW, bd= 4, relief="groove", width=22, height= 6, font=("arial", 12, "bold")).place(x=23, y=450)
+label4 = Label(root,text="Paridade", anchor= NW, bd= 4, relief="groove", width=22, height= 5, font=("arial", 12, "bold")).place(x=300, y=150)
 label5 = Label(root,text="Velocidade Inicial", font=("arial", 9)).place(x=20, y=250)
 
 # ENTRY #
 
-e1 = Entry(root, textvar= vel_ini).place(x= 130, y=250)
+# e1 = Entry(root, textvar= vel_ini, width= 19).place(x= 130, y=250)
+s1 = Spinbox(root, from_=0, to=1800, textvar= vel_ini, width= 18).place(x= 130, y=250)
 
 # COMBO BOX #
 list1 = ['BRISA', 'RAMPA', 'RIPPLE', 'RAJADA']
 droplist = OptionMenu(root, conf, *list1)
 conf.set("Selecione a configuração")
-droplist.config(width=20)
+droplist.config(width=22)
 droplist.place(x=20, y = 280)
 
 # RADIO BUTTONS #
@@ -122,13 +148,15 @@ p2 = Radiobutton(root, text="Even", variable= pary, value= 2).place(x=310, y=200
 p3 = Radiobutton(root, text="Odd", variable= pary, value= 3).place(x=310, y=220)
 
 # BUTTONS #
-button0=Button(root, text="+ Add", width= 4, height=1 ,fg='black', bg= 'gray', relief=GROOVE, font=("arial", 13, "italic"), command= add)
-button0.place(x=200, y=280)
-button1=Button(root, text="Cadastrar", width= 12, fg='black', bg= 'gray', relief=GROOVE, font=("arial", 13, "italic"))
-button1.place(x=450, y=470)
-button2=Button(root, text="Simular", width= 12, fg='black', bg= 'gray', relief=GROOVE, font=("arial", 13, "italic"), command=printt)
-button2.place(x=450, y=510)
-button3=Button(root, text="Sair", width= 12, fg='white', bg= 'brown', relief=GROOVE, font=("arial", 13, "italic"), command=exitt)
-button3.place(x=450, y=550)
+button0=Button(root, text="+Add", width= 5, height=1 ,fg='black', bg= 'light gray', justify= CENTER, relief=GROOVE, font=("arial", 10, "italic"), command= add)
+button0.place(x=200, y=282)
+button1=Button(root, text="Cadastrar", width= 22, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"))
+button1.place(x=300, y=418)
+button2=Button(root, text="Simular", width= 22, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=printt)
+button2.place(x=300, y=458)
+button3=Button(root, text="Apagar", width= 22, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"))
+button3.place(x=300, y=498)
+button4=Button(root, text="Sair", width= 12, fg='white', bg= 'brown', relief=GROOVE, font=("arial", 13, "italic"), command=exitt)
+button4.place(x=400, y=538)
 
 root.mainloop()
