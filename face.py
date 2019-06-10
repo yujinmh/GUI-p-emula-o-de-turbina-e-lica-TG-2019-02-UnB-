@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 from tkinter import *
-
-
 import tkinter.messagebox
 
 def exitt():
@@ -28,9 +26,8 @@ def brisa():
     wBrisa.title("BRISA")
     wBrisa.geometry("300x200")
     l1 = Label(wBrisa, text= "Duração: ").place(x=20, y=20)
-    e1 = Entry(wBrisa, textvar= duracao).place(x=150, y=20)  
-    
-    b0=Button(wBrisa, text="Ok", width= 8, height=1 ,fg='black', bg= 'gray', relief=GROOVE, font=("arial", 13, "italic"), command=listar)
+    e1 = Entry(wBrisa, textvariable= duracao).place(x=150, y=20)  
+    b0=Button(wBrisa, text="Ok", width= 8, height=1 ,fg='black', bg= 'gray', relief=GROOVE, font=("arial", 13, "italic"), command=lambda:listar(duracao))
     b0.place(x=60, y=120)
     b1=Button(wBrisa, text="Cancel", width= 8, height=1 ,fg='black', bg= 'gray', relief=GROOVE, font=("arial", 13, "italic"), command=wBrisa.destroy)
     b1.place(x=180, y=120)
@@ -39,7 +36,7 @@ def ripple():
     wRipple = Tk()
     wRipple.title("RIPPLE")
     wRipple.geometry("300x200")
-    l1 = Label(wRipple, text= "Amplitude: ").place(x=20,y=20)
+    l1 = Label(wRipple, text= "Amplitude de onda\n(Variacao de vel.): ").place(x=20,y=8)
     l2 = Label(wRipple, text= "Duração: ").place(x=20, y=60)
     e1 = Entry(wRipple).place(x=150, y=20)
     e2 = Entry(wRipple).place(x=150, y=60)
@@ -74,8 +71,9 @@ def rampa():
     b1=Button(wRampa, text="Cancel", width= 8, height=1 ,fg='black', bg= 'gray', relief=GROOVE, font=("arial", 13, "italic"), command=wRampa.destroy)
     b1.place(x=180, y=120)
 
-def listar():
-    aux = int(duracao.get())
+def listar(duracao):
+
+    aux = duracao.get()
     print (aux)
 
 ###################################### INÍCIO ######################################
