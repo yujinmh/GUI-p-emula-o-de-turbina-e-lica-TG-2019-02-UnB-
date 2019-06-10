@@ -4,6 +4,29 @@ import tkinter.messagebox
 def exitt():
     exit()
 
+def arqtexto():
+    global conflista
+    f= open("inputdeventos.txt","w+")
+    for i in range (len(conflista)):
+        if i%4 == 0:
+            f.write("Tipo:" + conflista[i] + " ")
+        if i%4 == 1:
+            if conflista[i] != 0:
+                f.write("Tempo:" + conflista[i] + " ")
+        if i%4 == 2:
+            if conflista[i] != 0:
+                f.write("Amplitude:" + conflista[i] + " ")
+        if i%4 == 3:
+            if conflista[i] != 0:
+                f.write("Velocidade Final:" + conflista[i] + " \n")
+      
+    f.close()
+
+def zerar():
+    vel_max.set(0)
+    ampl.set(0)
+    tempo.set(0)
+
 def printt():
     print("\nBAUD VALUE = ", int(baud.get()))
     print("PARIDADE = ", int(pary.get()))
@@ -23,18 +46,33 @@ def add():
 def peguei():
 
     global count
+    global conflista
+    line = int(count.get())
     tipo = str(conf.get())
     t = str(tempo.get())
     a = str(ampl.get())
     v = str(vel_max.get())
-    print("Tipo = ", tipo, " ", t, " ", a, " ", v, " contador = ", count.get())
+    conflista.append(tipo)
+    conflista.append(t)
+    conflista.append(a)
+    conflista.append(v)
+    print (conflista)
     count.set(count.get()+1)
-    # lista = lista.add(tipo,t,a,v)
-    label = Label(root,text= "testando").place(x=25, y=340)
+    if tipo == "BRISA":
+        historico = str(line+1) + ": " + tipo + ": Tempo: " + t + "s"
+    elif tipo =="RIPPLE":
+        historico = str(line+1) + ": " + tipo + ": Tempo: " + t + "Amplitude: " + a
+    elif tipo =="RAJADA":
+        historico = str(line+1) + ": " + tipo + ": Tempo: " + t +"s Velocidade: " + v + "rpm"
+    elif tipo =="RAMPA":
+        historico = str(line+1) + ": " + tipo + ": Tempo: " + t +"s Velocidade: " + v + "rpm"
+    if line < 14:
+        label = Label(root,text= historico, font=("arial",7)).place(x=25, y=345 + line*16)
 
 # VENTOS #
 
 def brisa():
+    zerar()
     wBrisa = Toplevel()
     wBrisa.title("BRISA")
     wBrisa.geometry("300x120+500+300")
@@ -49,6 +87,7 @@ def brisa():
     b1.place(x=185, y=70)
 
 def ripple():
+    zerar()
     wRipple = Toplevel()
     wRipple.title("RIPPLE")
     wRipple.geometry("300x160+500+300")
@@ -63,6 +102,7 @@ def ripple():
     b1.place(x=185, y=100)
 
 def rajada():
+    zerar()
     wRajada = Toplevel()
     wRajada.title("RAJADA")
     wRajada.geometry("300x160+500+300")
@@ -77,6 +117,7 @@ def rajada():
     b1.place(x=185, y=100)
 
 def rampa():
+    zerar()
     wRampa = Toplevel()
     wRampa.title("RAMPA")
     wRampa.geometry("300x160+500+300")
@@ -107,7 +148,8 @@ root.title("Emulador de vento")
 root.resizable(width=False, height=False)
 # root.configure(bg = "#94d42b")
 
-# VARIABLES #
+# VARIABLES ##
+conflista = []
 count = IntVar()
 baud = IntVar()
 pary = IntVar()
@@ -117,11 +159,12 @@ vel_max = IntVar()
 ampl = StringVar()
 tempo = StringVar()
 
+
 # LABELS #
-label1 = Label(root,text="Gráfico", anchor= NW, bd= 4, relief="groove", width=22, height= 11, font=("arial", 12, "bold")).place(x=23, y=20)
+label1 = Label(root,text="Gráfico", anchor= NW, bd= 4, relief="groove", width=25, height= 11, font=("arial", 12, "bold")).place(x=23, y=20)
 label2 = Label(root,text="BaudRate (bit/s)", anchor= NW, bd= 4, relief="groove", width=22, height= 6, font=("arial", 12, "bold")).place(x=300, y=20)
-label3 = Label(root,text="Descrição", anchor= NW, bd= 4, relief="groove", width=22, height= 6, font=("arial", 12, "bold")).place(x=23, y=320)
-label3 = Label(root,text="Histórico", anchor= NW, bd= 4, relief="groove", width=22, height= 6, font=("arial", 12, "bold")).place(x=23, y=450)
+# label3 = Label(root,text="Descrição", anchor= NW, bd= 4, relief="groove", width=22, height= 6, font=("arial", 12, "bold")).place(x=23, y=320)
+label3 = Label(root,text="Histórico", anchor= NW, bd= 4, relief="groove", width=25, height= 13, font=("arial", 12, "bold")).place(x=23, y=320)
 label4 = Label(root,text="Paridade", anchor= NW, bd= 4, relief="groove", width=22, height= 5, font=("arial", 12, "bold")).place(x=300, y=150)
 label5 = Label(root,text="Velocidade Inicial", font=("arial", 9)).place(x=20, y=250)
 
@@ -150,7 +193,7 @@ p3 = Radiobutton(root, text="Odd", variable= pary, value= 3).place(x=310, y=220)
 # BUTTONS #
 button0=Button(root, text="+Add", width= 5, height=1 ,fg='black', bg= 'light gray', justify= CENTER, relief=GROOVE, font=("arial", 10, "italic"), command= add)
 button0.place(x=200, y=282)
-button1=Button(root, text="Cadastrar", width= 22, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"))
+button1=Button(root, text="Cadastrar", width= 22, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=arqtexto)
 button1.place(x=300, y=418)
 button2=Button(root, text="Simular", width= 22, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=printt)
 button2.place(x=300, y=458)
