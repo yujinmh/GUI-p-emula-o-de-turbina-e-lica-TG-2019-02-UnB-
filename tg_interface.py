@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import filedialog
 import minimalmodbus
 import serial
 import time
@@ -26,6 +27,32 @@ def arqtexto():
       
     f.close()
 
+def browser():
+    global conflista
+    aux = []
+    string = ''
+
+    filename = filedialog.askopenfilename(initialdir = "/", title = "Select a File")
+    label = Label(root, text=filename, anchor=E, width=24).place(x=23, y=252)
+    f = open(filename, "r")   
+    f.seek(42) # Roubo para pular a primeira linha
+    msg = f.read()
+
+    for x in msg:
+        i = 0
+        if x != '\n' and x != '\t':
+            string += x
+        elif x == '\n' or x == '\t':
+            if string != '':
+                aux.append(string)
+            string = ''
+
+    conflista.extend(aux)    
+    
+    print(conflista)
+
+        
+
 def zerar():
     vel_max.set(0)
     ampl.set(0)
@@ -46,14 +73,16 @@ def parar():
 def b_all():
     button0=Button(root, text="+Add", width= 5, height=1 ,fg='black', bg= 'light gray', justify= CENTER, relief=GROOVE, font=("arial", 10, "italic"), command= add)
     button0.place(x=200, y=282)
-    button1=Button(root, text="Gerar txt", width= 22, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=arqtexto)
+    button1=Button(root, text="Gerar txt", width= 24, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=arqtexto)
     button1.place(x=300, y=418)
-    button2=Button(root, text="Simular", width= 22, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=printt)
+    button2=Button(root, text="Simular", width= 24, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=printt)
     button2.place(x=300, y=458)
-    button3=Button(root, text="Apagar", width= 22, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=apagar)
+    button3=Button(root, text="Apagar", width= 24, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=apagar)
     button3.place(x=300, y=498)
     button4=Button(root, text="Sair", width= 12, fg='white', bg= 'brown', relief=GROOVE, font=("arial", 13, "italic"), command=exitt)
-    button4.place(x=400, y=538)
+    button4.place(x=420, y=538)
+    button5=Button(root, text="Browse", width= 5, height=1 ,fg='black', bg= 'light gray', justify= CENTER, relief=GROOVE, font=("arial", 10, "italic"), command= browser)
+    button5.place(x=200, y=248)
 
 def printt():
     print("\nBAUD VALUE = ", int(baud.get()))
@@ -281,7 +310,7 @@ label8 = Label(root,text="Comprimento da pá\n(m)", font=("arial", 8)).place(x=3
 # ENTRY #
 
 # e1 = Entry(root, textvar= vel_ini, width= 19).place(x= 130, y=250)
-s1 = Spinbox(root, from_=0, to=1800, textvar= vel_ini, width= 18, increment = 0.1).place(x= 405, y=290)
+s1 = Spinbox(root, from_=0, to=1800, textvar= vel_ini, width= 19, increment = 0.1).place(x= 405, y=290)
 #s2 = Spinbox(root, from_=0, to=1800, textvar= vel_ini, width= 18, increment = 0.1).place(x= 130, y=230)
 e2 = Entry(root).place(x=405, y=320)
 e3 = Entry(root).place(x=405, y=350)
