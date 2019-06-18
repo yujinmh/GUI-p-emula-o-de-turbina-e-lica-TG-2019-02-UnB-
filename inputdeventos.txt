@@ -1,0 +1,2 @@
+Tipo:	Tempo:	Amplitude:	Velocidade Final
+BRISA	5	0		0

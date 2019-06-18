@@ -102,6 +102,9 @@ def inversor():
     global conflista
     global pary
     global baud
+    global TSR
+    global VelIni
+    global Comprimento
 
     instrument = minimalmodbus.Instrument('COM4', 1) # port name, slave address (in decimal)
        
@@ -149,6 +152,7 @@ def inversor():
                 print("eh rajada!")
                 print("A duracao da RAJADA sera de " + conflista[i+1])
                 print("A velocidade maxima da RAJADA sera de " + conflista[i+3])
+                conflista[i+3] = (TSR*conflista[i+3]*9.549)/Comprimento
                 instrument.write_register(100,(int(conflista[i+1]))/2, 1)#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
                 instrument.write_register(134,int(conflista[i+3]))#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
                 time.sleep(int(conflista[i+1])/2)
@@ -167,6 +171,7 @@ def inversor():
                 print("eh rampa!")
                 print("A duracao da RAMPA sera de " + conflista[i+1])
                 print("A velocidade maxima da RAMPA sera de " + conflista[i+3])
+                conflista[i+3] = (TSR*conflista[i+3]*9.549)/Comprimento
                 instrument.write_register(100,int(conflista[i+1]), 1)#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
                 instrument.write_register(134,int(conflista[i+3]))#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
                 time.sleep(int(conflista[i+1]))
@@ -259,19 +264,27 @@ vel_ini = IntVar()
 vel_max = IntVar()
 ampl = StringVar()
 tempo = StringVar()
+tsr = IntVar()
+comprimento = IntVar()
 
 # LABELS #
 label1 = Label(root,text="Gráfico", anchor= NW, bd= 4, relief="groove", width=25, height= 11, font=("arial", 12, "bold")).place(x=23, y=20)
-label2 = Label(root,text="BaudRate (bit/s)", anchor= NW, bd= 4, relief="groove", width=22, height= 6, font=("arial", 12, "bold")).place(x=300, y=20)
+label2 = Label(root,text="BaudRate (bit/s)", anchor= NW, bd= 4, relief="groove", width=24, height= 6, font=("arial", 12, "bold")).place(x=300, y=20)
 # label3 = Label(root,text="Descrição", anchor= NW, bd= 4, relief="groove", width=22, height= 6, font=("arial", 12, "bold")).place(x=23, y=320)
 label3 = Label(root,text="Histórico", anchor= NW, bd= 4, relief="groove", width=25, height= 13, font=("arial", 12, "bold")).place(x=23, y=320)
-label4 = Label(root,text="Paridade", anchor= NW, bd= 4, relief="groove", width=22, height= 5, font=("arial", 12, "bold")).place(x=300, y=150)
-label5 = Label(root,text="Velocidade Inicial", font=("arial", 9)).place(x=20, y=250)
+label4 = Label(root,text="Paridade", anchor= NW, bd= 4, relief="groove", width=24, height= 5, font=("arial", 12, "bold")).place(x=300, y=150)
+label5 = Label(root,text="Parâmetros Inicias", anchor= NW, bd= 4, relief="groove", width=24, height= 7, font=("arial", 12, "bold")).place(x=300, y=260)
+label6 = Label(root,text="Velocidade Inicial\n(m/s)", font=("arial", 8)).place(x=305, y=290)
+label7 = Label(root,text="Tip Speed Ratio", font=("arial", 8)).place(x=305, y=320)
+label8 = Label(root,text="Comprimento da pá\n(m)", font=("arial", 8)).place(x=305, y=350)
 
 # ENTRY #
 
 # e1 = Entry(root, textvar= vel_ini, width= 19).place(x= 130, y=250)
-s1 = Spinbox(root, from_=0, to=1800, textvar= vel_ini, width= 18).place(x= 130, y=250)
+s1 = Spinbox(root, from_=0, to=1800, textvar= vel_ini, width= 18, increment = 0.1).place(x= 405, y=290)
+#s2 = Spinbox(root, from_=0, to=1800, textvar= vel_ini, width= 18, increment = 0.1).place(x= 130, y=230)
+e2 = Entry(root).place(x=405, y=320)
+e3 = Entry(root).place(x=405, y=350)
 
 # COMBO BOX #
 list1 = ['BRISA', 'RAMPA', 'RIPPLE', 'RAJADA']
