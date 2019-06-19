@@ -48,10 +48,8 @@ def browser():
             string = ''
 
     conflista.extend(aux)    
-    
+    f.close()
     print(conflista)
-
-        
 
 def zerar():
     vel_max.set(0)
@@ -64,6 +62,7 @@ def apagar():
 
     count.set(0)
     conflista.clear()
+    label = Label(root, anchor=E, width=24).place(x=23, y=252)
     label3 = Label(root,text="Histórico", anchor= NW, bd= 4, relief="groove", width=25, height= 13, font=("arial", 12, "bold")).place(x=23, y=320)
 
 def parar():
@@ -119,21 +118,27 @@ def peguei():
     if tipo == "BRISA":
         historico = str(line+1) + ": " + tipo + ": Tempo: " + t + "s"
     elif tipo =="RIPPLE":
-        historico = str(line+1) + ": " + tipo + ": Tempo: " + t + "Amplitude: " + a
+        historico = str(line+1) + ": " + tipo + ": Tempo: " + t + " Amplitude: " + a
     elif tipo =="RAJADA":
         historico = str(line+1) + ": " + tipo + ": Tempo: " + t +"s Velocidade: " + v + "rpm"
     elif tipo =="RAMPA":
         historico = str(line+1) + ": " + tipo + ": Tempo: " + t +"s Velocidade: " + v + "rpm"
     if line < 14:
-        label = Label(root,text= historico, font=("arial",7)).place(x=25, y=330 + (len(conflista)/4)*16)
+        label = Label(root,text= historico, font=("arial",7)).place(x=25, y=330 + (count.get()*16))
 
 def inversor():
     global conflista
     global pary
     global baud
-    global TSR
-    global VelIni
-    global Comprimento
+    global tsr
+    global vel_ini
+    global comprimento
+
+    print("Comprimento = " + str(comprimento.get()))
+    print("Tsr = " + str(tsr.get()))
+
+    # conflista[1] = (int(tsr.get())*int(conflista[1])*9.549)/int(comprimento.get())
+    # print(conflista[1])
 
     instrument = minimalmodbus.Instrument('COM4', 1) # port name, slave address (in decimal)
        
@@ -170,7 +175,7 @@ def inversor():
 
             if conflista[i].lower() == "brisa":
                 print("eh brisa!")
-                print("A duracao da BRISA sera de " + conflista[i+1])#
+                print("A duracao da BRISA sera de " + conflista[i+1])
                 instrument.write_register(133,30)   #PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
 
                 #INCLUIR GERADOR DE NUMEROS ALEATORIOS VULGO RNGESUS
@@ -181,7 +186,7 @@ def inversor():
                 print("eh rajada!")
                 print("A duracao da RAJADA sera de " + conflista[i+1])
                 print("A velocidade maxima da RAJADA sera de " + conflista[i+3])
-                conflista[i+3] = (TSR*conflista[i+3]*9.549)/Comprimento
+                conflista[i+3] = (int(tsr.get())*int(conflista[i+3])*9.549)/int(comprimento.get())
                 instrument.write_register(100,(int(conflista[i+1]))/2, 1)#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
                 instrument.write_register(134,int(conflista[i+3]))#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
                 time.sleep(int(conflista[i+1])/2)
@@ -200,7 +205,7 @@ def inversor():
                 print("eh rampa!")
                 print("A duracao da RAMPA sera de " + conflista[i+1])
                 print("A velocidade maxima da RAMPA sera de " + conflista[i+3])
-                conflista[i+3] = (TSR*conflista[i+3]*9.549)/Comprimento
+                conflista[i+3] = (int(tsr.get())*int(conflista[i+3])*9.549)/int(comprimento.get())
                 instrument.write_register(100,int(conflista[i+1]), 1)#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
                 instrument.write_register(134,int(conflista[i+3]))#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
                 time.sleep(int(conflista[i+1]))
@@ -215,7 +220,7 @@ def brisa():
     wBrisa.resizable(width=False, height=False)
     l1 = Label(wBrisa, text= "Duração: ").place(x=20, y=20)
     e1 = Entry(wBrisa, textvar= tempo).place(x=150, y=20)
-    # w = Spinbox(wBrisa, from_=0, to=10).place(x=150, y=20)
+    #w = Spinbox(wBrisa, from_=0, to=10).place(x=150, y=20)
 
     b0=Button(wBrisa, text="Salvar", width= 8, height=1 ,fg='black', bg= 'light blue', relief=GROOVE, font=("arial", 13, "italic"), command=peguei)
     b0.place(x=85, y=70)
@@ -311,9 +316,9 @@ label8 = Label(root,text="Comprimento da pá\n(m)", font=("arial", 8)).place(x=3
 
 # e1 = Entry(root, textvar= vel_ini, width= 19).place(x= 130, y=250)
 s1 = Spinbox(root, from_=0, to=1800, textvar= vel_ini, width= 19, increment = 0.1).place(x= 405, y=290)
-#s2 = Spinbox(root, from_=0, to=1800, textvar= vel_ini, width= 18, increment = 0.1).place(x= 130, y=230)
-e2 = Entry(root).place(x=405, y=320)
-e3 = Entry(root).place(x=405, y=350)
+# s2 = Spinbox(root, from_=0, to=1800, textvar= vel_ini, width= 18, increment = 0.1).place(x= 130, y=230)
+e2 = Entry(root, textvar= tsr).place(x=405, y=320)
+e3 = Entry(root, textvar= comprimento).place(x=405, y=350)
 
 # COMBO BOX #
 list1 = ['BRISA', 'RAMPA', 'RIPPLE', 'RAJADA']
