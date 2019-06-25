@@ -140,7 +140,7 @@ def inversor():
     # conflista[1] = (int(tsr.get())*int(conflista[1])*9.549)/int(comprimento.get())
     # print(conflista[1])
 
-    instrument = minimalmodbus.Instrument('COM4', 1) # port name, slave address (in decimal)
+    instrument = minimalmodbus.Instrument('COM6', 1) # port name, slave address (in decimal)
        
     if int(baud.get()) == 1:
         instrument.serial.baudrate = 9600   # Baud
@@ -185,7 +185,7 @@ def inversor():
             elif conflista[i].lower() == "rajada": #
                 print("eh rajada!")
                 print("A duracao da RAJADA sera de " + conflista[i+1])
-                print("A velocidade maxima da RAJADA sera de " + conflista[i+3])
+                print("A velocidade maxima da RAJADA sera de " + str(conflista[i+3]))
                 conflista[i+3] = (int(tsr.get())*int(conflista[i+3])*9.549)/int(comprimento.get())
                 instrument.write_register(100,(int(conflista[i+1]))/2, 1)#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
                 instrument.write_register(134,int(conflista[i+3]))#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
@@ -204,7 +204,7 @@ def inversor():
             elif conflista[i].lower() == "rampa": #AQUI DEVERA SER PASSADO PARAMETROS PARA TEMPO DE ACELERACAO (P0100) E VELOCIDADE MAXIMA (P0134)
                 print("eh rampa!")
                 print("A duracao da RAMPA sera de " + conflista[i+1])
-                print("A velocidade maxima da RAMPA sera de " + conflista[i+3])
+                print("A velocidade maxima da RAMPA sera de " + str(conflista[i+3]))
                 conflista[i+3] = (int(tsr.get())*int(conflista[i+3])*9.549)/int(comprimento.get())
                 instrument.write_register(100,int(conflista[i+1]), 1)#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
                 instrument.write_register(134,int(conflista[i+3]))#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
