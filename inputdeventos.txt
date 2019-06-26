@@ -1,2 +1,2 @@
 Tipo:	Tempo:	Amplitude:	Velocidade Final
-BRISA	5	0		0
+RAMPA	11	0		20

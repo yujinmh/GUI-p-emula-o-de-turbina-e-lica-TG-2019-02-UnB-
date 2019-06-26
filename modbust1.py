@@ -31,24 +31,24 @@ sleep_time = 10
     # acl = (duração*velocidade_final)/(velocidade_final - velocidade_inicial)
 
 
-time.sleep(5)
-instrument.write_register(100,0,1)
-instrument.write_register(133,0)
-instrument.write_register(134,1)
+# time.sleep(5)
+# instrument.write_register(100,1,1)
+# instrument.write_register(133,0)
+instrument.write_register(134,20)
 
-time.sleep(10)
-print(instrument.read_register(133, 0))
-print(instrument.read_register(134, 0))
-instrument.write_register(134,50)
-instrument.write_register(133,30)
+# time.sleep(10)
+# print(instrument.read_register(133, 0))
+# print(instrument.read_register(134, 0))
+# instrument.write_register(134,20)
+# instrument.write_register(133,5)
 
-print(instrument.read_register(133, 0))
-print(instrument.read_register(134, 0))
+# print(instrument.read_register(133, 0))
+# print(instrument.read_register(134, 0))
+# instrument.write_register(682,0x0017)
 
 #     instrument.write_register(100,4,1)
 #     durex = instrument.read_register(100, 1)
 #     print(durex)
-#     instrument.write_register(682,0x0017)
 
 #     instrument.write_register(134,21)
 #     time.sleep(0.1)
