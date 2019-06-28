@@ -1,3 +1,13 @@
+#Code by: Matheus Henrique Dinato Menezes e Victor Yuji Sato
+#
+#Universidade de Brasília
+#
+#Trabalho de Graduação 2019/02
+#Tema: Desenvolvimento de Interface de Comunicação Baseada no Protocolo Modbus
+#para Conexão de um Computador (PC) a um Inversor de Frequência
+#
+#Orientador: Lélio Ribeiro Soares Júnior
+
 from tkinter import *
 from tkinter import filedialog
 import minimalmodbus
@@ -5,9 +15,11 @@ import serial
 import time
 import tkinter.messagebox
 
+#FUNÇÃO PARA FECHAMENTO DE JANELA
 def exitt():
     exit()
 
+#FUNÇÃO PARA CRIAÇÃO DE ARQUIVO .TXT COM AS CONFIGURAÇÕES CRIADAS PELO USUÁRIO
 def arqtexto():
     global conflista
     f= open("inputdeventos.txt","w+")
@@ -27,6 +39,8 @@ def arqtexto():
       
     f.close()
 
+#FUNÇÃO PARA BROWSER, UTILIZADA PARA PROCURAR UM ARQUIVO .TXT COM CONFIGURAÇÕES JÁ CRIADAS PREVIAMENTE E CARREGAR AS
+#CONFIGURAÇÕES CONTIDAS NELE
 def browser():
     global conflista
     aux = []
@@ -51,11 +65,14 @@ def browser():
     f.close()
     print(conflista)
 
+#FUNÇÃO PARA ZERAMENTO DE FUNÇÕES. IMPORTANTE PARA INICIALIZAÇÃO DE CADA JANELA ABERTA PARA CADA
+#CONFIGURAÇÃO NOVA DE VENTO
 def zerar():
     vel_max.set(0)
     ampl.set(0)
     tempo.set(0)
 
+#FUNÇÃO PARA APAGAR A LISTA COM OS VENTOS SELECIONADOS ANTERIORMENTE
 def apagar():
     global conflista
     global count
@@ -65,16 +82,18 @@ def apagar():
     label = Label(root, anchor=E, width=24).place(x=23, y=252)
     label3 = Label(root,text="Histórico", anchor= NW, bd= 4, relief="groove", width=25, height= 13, font=("arial", 12, "bold")).place(x=23, y=320)
 
+#FUNÇÃO PARA ENCERRAMENTO DE SIMULAÇÃO
 def parar():
     b=Button(root, text="Parar Simulação", width= 22, fg='white', bg= 'brown', relief=GROOVE, font=("arial", 13, "italic"), command= b_all)
     b.place(x=300, y=458)
 
+#FUNÇÃO PARA CRIAÇÃO DE BOTÕES CONTIDOS NA INTERFACE
 def b_all():
     button0=Button(root, text="+Add", width= 5, height=1 ,fg='black', bg= 'light gray', justify= CENTER, relief=GROOVE, font=("arial", 10, "italic"), command= add)
     button0.place(x=200, y=282)
     button1=Button(root, text="Gerar txt", width= 24, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=arqtexto)
     button1.place(x=300, y=418)
-    button2=Button(root, text="Simular", width= 24, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=printt)
+    button2=Button(root, text="Iniciar Emulação", width= 24, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=printt)
     button2.place(x=300, y=458)
     button3=Button(root, text="Apagar", width= 24, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=apagar)
     button3.place(x=300, y=498)
@@ -83,12 +102,14 @@ def b_all():
     button5=Button(root, text="Browse", width= 5, height=1 ,fg='black', bg= 'light gray', justify= CENTER, relief=GROOVE, font=("arial", 10, "italic"), command= browser)
     button5.place(x=200, y=248)
 
+#FUNÇÃO PARA VERIFICAÇÃO DE ENTRADAS (DEBUG)
 def printt():
     print("\nBAUD VALUE = ", int(baud.get()))
     print("PARIDADE = ", int(pary.get()))
     print("CONFIGURACAO = ", str(conf.get()))
     inversor()
 
+#FUNÇÃO PARA ADQUIRIR O TIPO DE VENTO QUE O USUÁRIO DESEJAR
 def add():
     aux = str(conf.get())
     if aux == 'BRISA':
@@ -100,6 +121,8 @@ def add():
     elif aux == 'RAJADA':
         rajada()
 
+#FUNÇÃO PARA INSERIR NOVAS CONFIGURAÇÕES DE VENTO EM UMA LISTA. A LISTA É UTILIZADA PARA CRIAÇÃO DE TXT E PARA
+#COMEÇAR A SIMULAÇÃO
 def peguei():
 
     global count
@@ -126,6 +149,7 @@ def peguei():
     if line < 14:
         label = Label(root,text= historico, font=("arial",7)).place(x=25, y=330 + (count.get()*16))
 
+#FUNÇÃO RESPONSÁVEL POR COMUNICAR COM O INVERSOR. A TROCA DE MENSAGENS OCORRE AQUI
 def inversor():
     global conflista
     global pary
@@ -211,7 +235,8 @@ def inversor():
                 time.sleep(int(conflista[i+1]))
 
 # VENTOS #
-
+#FUNÇÕES ('brisa', 'ripple', 'rajada' e 'rampa') PARA CRIAÇÃO DE JANELAS PARA CADA VEZ QUE O USUÁRIO DESEJAR ADICIONAR
+#UMA NOVA CONFIGURAÇÃO DE VENTO
 def brisa():
     zerar()
     wBrisa = Toplevel()
@@ -272,7 +297,7 @@ def rampa():
     b1=Button(wRampa, text="Cancel", width= 8, height=1 ,fg='black', bg= 'light blue', relief=GROOVE, font=("arial", 13, "italic"), command=wRampa.destroy)
     b1.place(x=185, y=100)
 
-###################################### INÍCIO ######################################
+###################################### INÍCIO DA MAIN ######################################
 
 root=Tk()
 
