@@ -46,11 +46,14 @@ def browser():
     aux = []
     string = ''
 
-    filename = filedialog.askopenfilename(initialdir = "/", title = "Select a File")
+    # filename = filedialog.askopenfilename(initialdir = "/", title = "Select a File")
+    filename = filedialog.askopenfilename(initialdir = "/Users/Matheus/Desktop/tgPy", title = "Select a File")
     label = Label(root, text=filename, anchor=E, width=24).place(x=23, y=252)
-    f = open(filename, "r")   
+    f = open(filename, "r") 
     f.seek(42) # Roubo para pular a primeira linha
     msg = f.read()
+
+    # Implementar alguma coisa aqui
 
     for x in msg:
         i = 0
@@ -164,17 +167,21 @@ def inversor():
     # conflista[1] = (int(tsr.get())*int(conflista[1])*9.549)/int(comprimento.get())
     # print(conflista[1])
 
-    instrument = minimalmodbus.Instrument('COM6', 1) # port name, slave address (in decimal)
+    instrument = minimalmodbus.Instrument('COM3', 1) # port name, slave address (in decimal)
        
     if int(baud.get()) == 1:
         instrument.serial.baudrate = 9600   # Baud
+        print(9600)
     elif int(baud.get()) == 2:
         instrument.serial.baudrate = 19200   # Baud
+        print(19200)
     elif int(baud.get()) == 3:
         instrument.serial.baudrate = 38400   # Baud
+        print(38400)
     elif int(baud.get()) == 4:
         instrument.serial.baudrate = 57600   # Baud
-    
+        print(19200)
+
     instrument.serial.bytesize = 8
 
     if int(pary.get()) == 1:
@@ -185,54 +192,93 @@ def inversor():
         instrument.serial.parity   = serial.PARITY_ODD
     
     instrument.serial.stopbits = 1
-    instrument.debug = False
-    # instrument.serial.dsrdtr = False
-    # instrument.close_port_after_each_call = True
-    instrument.serial.timeout  = 0.5 # seconds
+    # instrument.serial.timeout  = 0.5 # seconds
     instrument.serial.xonxoff = False
-    # instrument.serial.rtscts = True
     instrument.mode = minimalmodbus.MODE_RTU   # rtu or ascii mode
-    print(instrument)
+
+    # INICIAR VALORES NO INVERSOR #
+
+    time.sleep(2)
+
+    instrument.write_register(682,0x0014)   # Deixar ele em modo operacional
+    instrument.write_register(134,1500)     # Setar a velocidade máxima para 1800
+    instrument.write_register(133,0)        # Setar a velocidade mínima para 0
+    instrument.write_register(683,0)        # Setar a velocidade de referência para 0
+    instrument.write_register(682,0x0013)   # Deixar ele em modo operacional
+
+    time.sleep(2)
+    
+    # print(i)
 
     for i in range(len(conflista)):
         if i%4 == 0:
 
-            if conflista[i].lower() == "brisa":
-                print("eh brisa!")
+            if conflista[i] == "BRISA":
                 print("A duracao da BRISA sera de " + conflista[i+1])
-                instrument.write_register(133,30)   #PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
+                instrument.write_register(133,30)   
 
                 #INCLUIR GERADOR DE NUMEROS ALEATORIOS VULGO RNGESUS
 
                 time.sleep(int(conflista[i+1]))
 
-            elif conflista[i].lower() == "rajada": #
-                print("eh rajada!")
+            elif conflista[i] == "RAJADA":
                 print("A duracao da RAJADA sera de " + conflista[i+1])
-                print("A velocidade maxima da RAJADA sera de " + str(conflista[i+3]))
-                conflista[i+3] = (int(tsr.get())*int(conflista[i+3])*9.549)/int(comprimento.get())
-                instrument.write_register(100,(int(conflista[i+1]))/2, 1)#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
-                instrument.write_register(134,int(conflista[i+3]))#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
-                time.sleep(int(conflista[i+1])/2)
-                instrument.write_register(101,int(conflista[i+1])/2, 1)#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
-                instrument.write_register(134,int(conflista[i+3]))#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
-                time.sleep(int(conflista[i+1])/2)
+                print("A velocidade maxima da RAJADA sera de " + conflista[i+3])
 
-            elif conflista[i].lower() == "ripple":
-                print("eh raipple!")
+                conflista[i+3] = (int(tsr.get())*int(conflista[i+3])*9.549)/int(comprimento.get())
+                v_ini = int(instrument.read_register(683,0))
+
+                if conflista[i+3] > instrument.read_register(683, 0):
+                    instrument.write_register(134,int(conflista[i+3]))
+                    instrument.write_register(100,(int(conflista[i+1])*int(conflista[i+3]))/(2*(int(conflista[i+3])-int(instrument.read_register(683,0)))),1)
+                    instrument.write_register(683,int(conflista[i+3])*8045/885)
+                    time.sleep(int(conflista[i+1])/2)
+                    instrument.write_register(101,(int(conflista[i+1])*int(conflista[i+3]))/(2*(int(instrument.read_register(683,0)-int(conflista[i+3])))),1)
+                    instrument.write_register(683,v_ini*8045/885)
+                    time.sleep(int(conflista[i+1]/2))
+                elif conflista[i+3] == instrument.read_register(683,0):
+                    time.sleep(int(conflista[i+1]))
+                else:
+                    instrument.write_register(101,(int(conflista[i+1])*int(conflista[i+3]))/(2*(int(instrument.read_register(683,0) - int(conflista[i+3])))),1)
+                    instrument.write_register(683,int(conflista[i+3])*8045/885)
+                    time.sleep(int(conflista[i+1])/2)
+                    instrument.write_register(100,(int(conflista[i+1])*int(conflista[i+3]))/(2*(int(conflista[i+3])-int(instrument.read_register(683,0)))),1)
+                    instrument.write_register(683,v_ini*8045/885)
+                    time.sleep(int(conflista[i+1]/2))
+
+            elif conflista[i] == "RIPPLE":
                 print("A duracao da RIPPLE sera de " + conflista[i+1])
                 print("A amplitude da RIPPLE sera de " + conflista[i+2])
-                instrument.write_register(133,30)#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
+                instrument.write_register(133,30)
                 time.sleep(int(conflista[i+1]))
 
-            elif conflista[i].lower() == "rampa": #AQUI DEVERA SER PASSADO PARAMETROS PARA TEMPO DE ACELERACAO (P0100) E VELOCIDADE MAXIMA (P0134)
-                print("eh rampa!")
+            elif conflista[i] == "RAMPA": 
                 print("A duracao da RAMPA sera de " + conflista[i+1])
-                print("A velocidade maxima da RAMPA sera de " + str(conflista[i+3]))
+                print("A velocidade maxima da RAMPA sera de " + conflista[i+3])
+                
                 conflista[i+3] = (int(tsr.get())*int(conflista[i+3])*9.549)/int(comprimento.get())
-                instrument.write_register(100,int(conflista[i+1]), 1)#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
-                instrument.write_register(134,int(conflista[i+3]))#PRIMEIRO PARAMETRO SERA O REGISTRADOR E O SEGUNDO SERA O VALOR
-                time.sleep(int(conflista[i+1]))
+                
+
+                if int(conflista[i+3]) > int(instrument.read_register(683, 0)):
+
+                    time.sleep(5)    
+                    instrument.write_register(134,int(conflista[i+3]))
+                    
+                    instrument.write_register(100,(int(conflista[i+1])*int(conflista[i+3]))/(int(conflista[i+3])-int(instrument.read_register(683,0))),1)
+                    
+                    instrument.write_register(683,int(conflista[i+3])*8045/885)
+                    time.sleep(int(conflista[i+1]))
+                elif conflista[i+3] == instrument.read_register(683,0):
+                    time.sleep(int(conflista[i+1]))
+                else:
+                    
+                    instrument.write_register(101,(int(conflista[i+1])*int(conflista[i+3]))/(int(instrument.read_register(683,0) - int(conflista[i+3]))),1)
+                    
+                    instrument.write_register(683,int(conflista[i+3])*8045/885)
+                    time.sleep(int(conflista[i+1]))
+    
+    instrument.write_register(682,0x0014)   # Deixar ele em modo operacional
+    
 
 # VENTOS #
 #FUNÇÕES ('brisa', 'ripple', 'rajada' e 'rampa') PARA CRIAÇÃO DE JANELAS PARA CADA VEZ QUE O USUÁRIO DESEJAR ADICIONAR
@@ -243,10 +289,9 @@ def brisa():
     wBrisa.title("BRISA")
     wBrisa.geometry("300x120+500+300")
     wBrisa.resizable(width=False, height=False)
-    l1 = Label(wBrisa, text= "Duração: ").place(x=20, y=20)
+    l1 = Label(wBrisa, text= "Duração (s): ").place(x=20, y=20)
     e1 = Entry(wBrisa, textvar= tempo).place(x=150, y=20)
-    #w = Spinbox(wBrisa, from_=0, to=10).place(x=150, y=20)
-
+   
     b0=Button(wBrisa, text="Salvar", width= 8, height=1 ,fg='black', bg= 'light blue', relief=GROOVE, font=("arial", 13, "italic"), command=peguei)
     b0.place(x=85, y=70)
     b1=Button(wBrisa, text="Sair", width= 8, height=1 ,fg='black', bg= 'light blue', relief=GROOVE, font=("arial", 13, "italic"), command=wBrisa.destroy)
@@ -258,8 +303,8 @@ def ripple():
     wRipple.title("RIPPLE")
     wRipple.geometry("300x160+500+300")
     wRipple.resizable(width=False, height=False)
-    l1 = Label(wRipple, text= "Amplitude: ").place(x=20,y=20)
-    l2 = Label(wRipple, text= "Duração: ").place(x=20, y=60)
+    l1 = Label(wRipple, text= "Amplitude (m/s): ").place(x=20,y=20)
+    l2 = Label(wRipple, text= "Duração (s): ").place(x=20, y=60)
     e1 = Entry(wRipple, textvar= ampl).place(x=150, y=20)
     e2 = Entry(wRipple, textvar= tempo).place(x=150, y=60)
     b0=Button(wRipple, text="Ok", width= 8, height=1 ,fg='black', bg= 'light blue', relief=GROOVE, font=("arial", 13, "italic"), command=peguei)
@@ -273,8 +318,8 @@ def rajada():
     wRajada.title("RAJADA")
     wRajada.geometry("300x160+500+300")
     wRajada.resizable(width=False, height=False)
-    l1 = Label(wRajada, text= "Velocidade final: ").place(x=20,y=20)
-    l2 = Label(wRajada, text= "Duração: ").place(x=20, y=60)
+    l1 = Label(wRajada, text= "Velocidade final (m/s): ").place(x=20,y=20)
+    l2 = Label(wRajada, text= "Duração (s): ").place(x=20, y=60)
     e1 = Entry(wRajada, textvar= vel_max).place(x=150, y=20)
     e2 = Entry(wRajada, textvar= tempo).place(x=150, y=60)
     b0=Button(wRajada, text="Ok", width= 8, height=1 ,fg='black', bg= 'light blue', relief=GROOVE, font=("arial", 13, "italic"), command = peguei)
@@ -288,8 +333,8 @@ def rampa():
     wRampa.title("RAMPA")
     wRampa.geometry("300x160+500+300")
     wRampa.resizable(width=False, height=False)
-    l1 = Label(wRampa, text= "Velocidade final: ").place(x=20,y=20)
-    l2 = Label(wRampa, text= "Duração: ").place(x=20, y=60)
+    l1 = Label(wRampa, text= "Velocidade final (m/s): ").place(x=20,y=20)
+    l2 = Label(wRampa, text= "Duração (s): ").place(x=20, y=60)
     e1 = Entry(wRampa, textvar= vel_max).place(x=150, y=20)
     e2 = Entry(wRampa, textvar= tempo).place(x=150, y=60)
     b0=Button(wRampa, text="Ok", width= 8, height=1 ,fg='black', bg= 'light blue', relief=GROOVE, font=("arial", 13, "italic"), command=peguei)
@@ -313,7 +358,7 @@ root.title("Emulador de vento")
 root.resizable(width=False, height=False)
 # root.configure(bg = "#94d42b")
 
-# VARIABLES ##
+# VARIABLES #
 conflista = []
 count = IntVar()
 baud = IntVar()
@@ -326,10 +371,16 @@ tempo = StringVar()
 tsr = IntVar()
 comprimento = IntVar()
 
+# INICIAR VARIÁVEIS #
+
+tsr.set(1)
+comprimento.set(1)
+pary.set(1)
+baud.set(1)
+
 # LABELS #
 label1 = Label(root,text="Gráfico", anchor= NW, bd= 4, relief="groove", width=25, height= 11, font=("arial", 12, "bold")).place(x=23, y=20)
 label2 = Label(root,text="BaudRate (bit/s)", anchor= NW, bd= 4, relief="groove", width=24, height= 6, font=("arial", 12, "bold")).place(x=300, y=20)
-# label3 = Label(root,text="Descrição", anchor= NW, bd= 4, relief="groove", width=22, height= 6, font=("arial", 12, "bold")).place(x=23, y=320)
 label3 = Label(root,text="Histórico", anchor= NW, bd= 4, relief="groove", width=25, height= 13, font=("arial", 12, "bold")).place(x=23, y=320)
 label4 = Label(root,text="Paridade", anchor= NW, bd= 4, relief="groove", width=24, height= 5, font=("arial", 12, "bold")).place(x=300, y=150)
 label5 = Label(root,text="Parâmetros Inicias", anchor= NW, bd= 4, relief="groove", width=24, height= 7, font=("arial", 12, "bold")).place(x=300, y=260)
@@ -338,10 +389,7 @@ label7 = Label(root,text="Tip Speed Ratio", font=("arial", 8)).place(x=305, y=32
 label8 = Label(root,text="Comprimento da pá\n(m)", font=("arial", 8)).place(x=305, y=350)
 
 # ENTRY #
-
-# e1 = Entry(root, textvar= vel_ini, width= 19).place(x= 130, y=250)
-s1 = Spinbox(root, from_=0, to=1800, textvar= vel_ini, width= 19, increment = 0.1).place(x= 405, y=290)
-# s2 = Spinbox(root, from_=0, to=1800, textvar= vel_ini, width= 18, increment = 0.1).place(x= 130, y=230)
+s1 = Spinbox(root, from_=0, to=1800, textvar= vel_ini, width= 19, increment = 0.4).place(x= 405, y=290)
 e2 = Entry(root, textvar= tsr).place(x=405, y=320)
 e3 = Entry(root, textvar= comprimento).place(x=405, y=350)
 
