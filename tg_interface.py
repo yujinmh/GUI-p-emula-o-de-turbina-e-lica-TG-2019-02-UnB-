@@ -50,7 +50,7 @@ def browser():
     filename = filedialog.askopenfilename(initialdir = "/Users/Matheus/Desktop/tgPy", title = "Select a File")
     label = Label(root, text=filename, anchor=E, width=24).place(x=23, y=252)
     f = open(filename, "r") 
-    f.seek(42) # Roubo para pular a primeira linha
+    f.seek(42) # Pular a primeira linha
     msg = f.read()
 
     # Implementar alguma coisa aqui
@@ -96,7 +96,7 @@ def b_all():
     button0.place(x=200, y=282)
     button1=Button(root, text="Gerar txt", width= 24, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=arqtexto)
     button1.place(x=300, y=418)
-    button2=Button(root, text="Iniciar Emulação", width= 24, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=printt)
+    button2=Button(root, text="Iniciar Emulação", width= 24, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=inversor)
     button2.place(x=300, y=458)
     button3=Button(root, text="Apagar", width= 24, fg='black', bg= 'light gray', relief=GROOVE, font=("arial", 13, "italic"), command=apagar)
     button3.place(x=300, y=498)
@@ -105,12 +105,6 @@ def b_all():
     button5=Button(root, text="Browse", width= 5, height=1 ,fg='black', bg= 'light gray', justify= CENTER, relief=GROOVE, font=("arial", 10, "italic"), command= browser)
     button5.place(x=200, y=248)
 
-#FUNÇÃO PARA VERIFICAÇÃO DE ENTRADAS (DEBUG)
-def printt():
-    print("\nBAUD VALUE = ", int(baud.get()))
-    print("PARIDADE = ", int(pary.get()))
-    print("CONFIGURACAO = ", str(conf.get()))
-    inversor()
 
 #FUNÇÃO PARA ADQUIRIR O TIPO DE VENTO QUE O USUÁRIO DESEJAR
 def add():
