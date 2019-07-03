@@ -211,9 +211,18 @@ def inversor():
                 print("A duracao da BRISA sera de " + conflista[i+1])
                 instrument.write_register(133,30)   
 
-                #INCLUIR GERADOR DE NUMEROS ALEATORIOS VULGO RNGESUS
-
-                time.sleep(int(conflista[i+1]))
+                for i in range (1,conflista[i+1]+1):
+                    vel_anterior = int(instrument.read_register(683,0)
+                    a = random.randint( -5, 5)
+                    vento =  vel_anterior + a
+                    if vento <= 0:
+                        vento = 3
+                    elif vento > 100:
+                        vento = 99
+                    instrument.write_register(134,int(vento))
+                    instrument.write_register(100,(int(vento))/int(vento)-int(vel_anterior))
+                    instrument.write_register(683,int(vento)*8045/885)
+                    time.sleep(1)
 
             elif conflista[i] == "RAJADA":
                 print("A duracao da RAJADA sera de " + conflista[i+1])
@@ -271,6 +280,7 @@ def inversor():
                     instrument.write_register(683,int(conflista[i+3])*8045/885)
                     time.sleep(int(conflista[i+1]))
     
+    print('Fim da emulacao!')
     instrument.write_register(682,0x0014)   # Deixar ele em modo operacional
     
 
