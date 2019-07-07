@@ -14,6 +14,7 @@ import minimalmodbus
 import serial
 import time
 import tkinter.messagebox
+import random
 
 #FUNÇÃO PARA FECHAMENTO DE JANELA
 def exitt():
@@ -185,22 +186,29 @@ def inversor():
     elif int(pary.get()) == 3:
         instrument.serial.parity   = serial.PARITY_ODD
     
+    # instrument.debug = True
     instrument.serial.stopbits = 1
-    # instrument.serial.timeout  = 0.5 # seconds
+    instrument.serial.timeout  = 0.05 # seconds
     instrument.serial.xonxoff = False
+    instrument.precalculate_read_size = False
     instrument.mode = minimalmodbus.MODE_RTU   # rtu or ascii mode
 
     # INICIAR VALORES NO INVERSOR #
 
-    time.sleep(2)
-
-    instrument.write_register(682,0x0014)   # Deixar ele em modo operacional
-    instrument.write_register(134,1500)     # Setar a velocidade máxima para 1800
-    instrument.write_register(133,0)        # Setar a velocidade mínima para 0
-    instrument.write_register(683,0)        # Setar a velocidade de referência para 0
-    instrument.write_register(682,0x0013)   # Deixar ele em modo operacional
 
     time.sleep(2)
+    instrument.write_register(682,0x0014,functioncode = 6)   # Deixar ele em modo operacional
+    time.sleep(2)
+    instrument.write_register(100,100,functioncode = 6)
+    instrument.write_register(134,1500,functioncode = 6)     # Setar a velocidade máxima para 1800
+    instrument.write_register(133,0,functioncode = 6)        # Setar a velocidade mínima para 0
+    instrument.write_register(683,5500,functioncode = 6)        # Setar a velocidade de referência para 0
+    time.sleep(2)
+    instrument.write_register(682,0x0013,functioncode = 6)   # Deixar ele em modo operacional
+    time.sleep(10)
+    instrument.write_register(100,10,functioncode = 6)
+    time.sleep(2)
+
     
     # print(i)
 
@@ -209,19 +217,26 @@ def inversor():
 
             if conflista[i] == "BRISA":
                 print("A duracao da BRISA sera de " + conflista[i+1])
-                instrument.write_register(133,30)   
-
-                for i in range (1,conflista[i+1]+1):
-                    vel_anterior = int(instrument.read_register(683,0)
-                    a = random.randint( -5, 5)
+                j=0
+                for j in range (1,int(conflista[j+1])+1):
+                    time.sleep(0.011)
+                    vel_anterior = int(instrument.read_register(1,0))
+                    time.sleep(0.011)
+                    a = random.randint(-5, 5)
                     vento =  vel_anterior + a
+                    print("A = ", a, "  vel_anterior = ", vel_anterior, "  vento = ", vento, "quantidade = ", j)
                     if vento <= 0:
                         vento = 3
-                    elif vento > 100:
-                        vento = 99
-                    instrument.write_register(134,int(vento))
-                    instrument.write_register(100,(int(vento))/int(vento)-int(vel_anterior))
-                    instrument.write_register(683,int(vento)*8045/885)
+                    elif vento > 1000:
+                        vento = 999
+                    time.sleep(0.011)
+                    # instrument.write_register(134,100, functioncode = 6)
+                    # time.sleep(0.011)
+                    # instrument.write_register(100,(int(vento))/int(vento)-int(vel_anterior),functioncode = 6)
+                    # instrument.write_register(100,10,functioncode = 6)
+                    time.sleep(0.011)
+                    vento = vento*8045/885
+                    instrument.write_register(683,vento,functioncode = 6)
                     time.sleep(1)
 
             elif conflista[i] == "RAJADA":
