@@ -15,6 +15,7 @@ import serial
 import time
 import tkinter.messagebox
 import random
+import math
 
 #FUNÇÃO PARA FECHAMENTO DE JANELA
 def exitt():
@@ -199,15 +200,15 @@ def inversor():
     time.sleep(2)
     instrument.write_register(682,0x0014,functioncode = 6)   # Deixar ele em modo operacional
     time.sleep(2)
-    instrument.write_register(100,100,functioncode = 6)
+    instrument.write_register(100,0,functioncode = 6)
     instrument.write_register(134,1500,functioncode = 6)     # Setar a velocidade máxima para 1800
     instrument.write_register(133,0,functioncode = 6)        # Setar a velocidade mínima para 0
-    instrument.write_register(683,5500,functioncode = 6)        # Setar a velocidade de referência para 0
+    instrument.write_register(683,0,functioncode = 6)     # Setar a velocidade de referência para 0
     time.sleep(2)
     instrument.write_register(682,0x0013,functioncode = 6)   # Deixar ele em modo operacional
     time.sleep(10)
-    instrument.write_register(100,10,functioncode = 6)
-    time.sleep(2)
+    # instrument.write_register(100,10,functioncode = 6)
+    # time.sleep(2)
 
     
     # print(i)
@@ -275,24 +276,35 @@ def inversor():
                 print("A velocidade maxima da RAMPA sera de " + conflista[i+3])
                 
                 conflista[i+3] = (int(tsr.get())*int(conflista[i+3])*9.549)/int(comprimento.get())
-                
+                conflista[i+3] = math.floor(conflista[i+3])
 
-                if int(conflista[i+3]) > int(instrument.read_register(683, 0)):
-
-                    time.sleep(5)    
-                    instrument.write_register(134,int(conflista[i+3]))
-                    
-                    instrument.write_register(100,(int(conflista[i+1])*int(conflista[i+3]))/(int(conflista[i+3])-int(instrument.read_register(683,0))),1)
-                    
-                    instrument.write_register(683,int(conflista[i+3])*8045/885)
+                if int(conflista[i+3]) > int(instrument.read_register(1, 0,functioncode = 3)):
+                    time.sleep(0.11)    
+                    instrument.write_register(134,int(conflista[i+3]), functioncode = 6)
+                    escrita = (int(conflista[i+1])*int(conflista[i+3]))/(int(conflista[i+3])-int(instrument.read_register(1,0)))
+                    escrita = math.floor(escrita)
+                    print("CONFLISTA: ", conflista[i+3],"  LIDO: ", instrument.read_register(1,0,functioncode = 3),"   TEMPO ACE: ", escrita)
+                    time.sleep(0.11)    
+                    instrument.write_register(100,escrita,1, functioncode = 6)
+                    time.sleep(0.11)
+                    escrita2 = int(conflista[i+3])*8045/885
+                    escrita2 = math.floor(escrita2)    
+                    instrument.write_register(683,escrita2, functioncode = 6)
                     time.sleep(int(conflista[i+1]))
+                
                 elif conflista[i+3] == instrument.read_register(683,0):
                     time.sleep(int(conflista[i+1]))
-                else:
-                    
-                    instrument.write_register(101,(int(conflista[i+1])*int(conflista[i+3]))/(int(instrument.read_register(683,0) - int(conflista[i+3]))),1)
-                    
-                    instrument.write_register(683,int(conflista[i+3])*8045/885)
+                
+                elif int(conflista[i+3]) < int(instrument.read_register(1, 0)):
+                    escrita = (int(conflista[i+1])*int(conflista[i+3]))/(int(instrument.read_register(1,0) - int(conflista[i+3])))
+                    escrita = math.floor(escrita)
+                    print("CONFLISTA: ", conflista[i+3],"  LIDO: ", instrument.read_register(1,0,functioncode = 3),"   TEMPO ACE: ", escrita)
+                    time.sleep(0.11)    
+                    instrument.write_register(101,escrita,1,functioncode = 6)
+                    time.sleep(0.11)    
+                    escrita2 = int(conflista[i+3])*8045/885
+                    escrita2 = math.floor(escrita2)    
+                    instrument.write_register(683,escrita2, functioncode = 6)
                     time.sleep(int(conflista[i+1]))
     
     print('Fim da emulacao!')
