@@ -190,7 +190,7 @@ def inversor():
 
     time.sleep(2)
     instrument.write_register(682,0x0014,functioncode = 6)   # Deixar ele em modo operacional
-    time.sleep(2)
+    # time.sleep(2)
     instrument.write_register(100,0,functioncode = 6)
     instrument.write_register(134,1500,functioncode = 6)     # Setar a velocidade máxima para 1800
     instrument.write_register(133,0,functioncode = 6)        # Setar a velocidade mínima para 0
@@ -202,6 +202,7 @@ def inversor():
     instrument.write_register(100,5, 1,functioncode = 6)
     time.sleep(0.05)
     instrument.write_register(134,ini,functioncode = 6)     # Setar a velocidade máxima para 1800
+    time.sleep(0.05)
     ini = ini*8045/885
     time.sleep(0.05)
     instrument.write_register(683,ini,functioncode = 6)     # Setar a velocidade de referência para 0
@@ -245,7 +246,8 @@ def inversor():
                 print("Vm rajada = " + conflista[i+3]+ "m/s")
 
                 conflista[i+3] = (int(tsr.get())*int(conflista[i+3])*9.549)/int(comprimento.get())
-                v_ini = int(instrument.read_register(683,0))
+                v_ini = int(instrument.read_register(1,0))
+                print ("VEL_INI = ", str(vel_ini))
                 time.sleep(0.05)    
 
                 if conflista[i+3] > instrument.read_register(1, 0):
@@ -263,7 +265,9 @@ def inversor():
                     time.sleep(t_raj)
 
                     #DESCIDA
-                    ace_neg = (int(conflista[i+1])*int(conflista[i+3]))/(2*(int(instrument.read_register(1,0)-int(conflista[i+3]))))
+                    # ace_neg = (int(conflista[i+1])*int(conflista[i+3]))/(2*(int(instrument.read_register(1,0))-v_ini))
+                    ace_neg = (int(conflista[i+1])*int(conflista[i+3]))/(2*(int(conflista[i+3])-v_ini))
+                    print("ACE = ", ace_neg)
                     time.sleep(0.05)
                     instrument.write_register(101,ace_neg,1, functioncode=6)
                     time.sleep(0.05)
@@ -278,41 +282,45 @@ def inversor():
                     #DESCIDA
                     ace_neg = (int(conflista[i+1])*int(conflista[i+3]))/(2*(int(instrument.read_register(1,0) - int(conflista[i+3]))))
                     time.sleep(0.05)
-                    instrument.write_register(101,ace_neg,1)
+                    instrument.write_register(101,ace_neg,1, functioncode=6)
                     time.sleep(0.05)
                     vel_neg = int(conflista[i+3])*8045/885
-                    instrument.write_register(683,vel_neg)
+                    instrument.write_register(683,vel_neg, functioncode=6)
                     t_raj = int(conflista[i+1])/2
                     time.sleep(t_raj)
 
                     #SUBIDA
                     ace_pos = (int(conflista[i+1])*int(conflista[i+3]))/(2*(int(conflista[i+3])-int(instrument.read_register(1,0))))
                     time.sleep(0.05)
-                    instrument.write_register(100,ace_pos,1)
+                    instrument.write_register(100,ace_pos,1, functioncode=6)
                     time.sleep(0.05)
                     vel_pos = v_ini*8045/885
-                    instrument.write_register(683,vel_pos)
+                    instrument.write_register(683,vel_pos, functioncode=6)
                     time.sleep(t_raj)
 
             elif conflista[i] == "RIPPLE":
                 print("T ripple = " + conflista[i+1]+ "s")
                 print("Amp ripple = " + conflista[i+2])
 
-                t_amostragem = int(conflista[i+1])/0.1
+                t_amostragem = int(int(conflista[i+1])/0.5)
                 time.sleep(0.05)    
                 V_inic = int(instrument.read_register(1,0))
-                amp = int(conflista[i+2])/2
+                amp = int((int(tsr.get())*int(conflista[i+2])*9.549)/2*int(comprimento.get()))
+                v_max = V_inic + amp + amp
                 time.sleep(0.05)    
-                instrument.write_register(100,1,1, functioncode=6)
+                instrument.write_register(134,v_max, functioncode=6)
                 time.sleep(0.05)    
-                instrument.write_register(101,1,1, functioncode=6)
+                instrument.write_register(100,1, functioncode=6)
+                time.sleep(0.05)    
+                instrument.write_register(101,1, functioncode=6)
                 time.sleep(0.05)    
                 for i in range (1, t_amostragem):
-                    V_ripple = V_inic + amp*(np.sen((np.pi*i/10)+(3*np.pi/2))) + amp
+                    V_ripple = V_inic + amp*(np.sin((np.pi*i/10)+(3*np.pi/2))) + amp
+                    V_ripple = math.floor(V_ripple*8045/885)
                     time.sleep(0.05)    
                     instrument.write_register(683, V_ripple, functioncode=6)
-                    print (V_ripple)
-                    time.sleep(0.05)
+                    # print (V_ripple)
+                    time.sleep(0.5)
 
             elif conflista[i] == "RAMPA": 
                 print("T rampa = " + str(conflista[i+1]) + "s")
@@ -336,7 +344,7 @@ def inversor():
                     instrument.write_register(683,escrita2, functioncode = 6)
                     time.sleep(int(conflista[i+1]))
                 
-                elif conflista[i+3] == instrument.read_register(683,0):
+                elif conflista[i+3] == instrument.read_register(1,0):
                     time.sleep(int(conflista[i+1]))
                 
                 elif int(conflista[i+3]) < int(instrument.read_register(1, 0)):
@@ -355,10 +363,9 @@ def inversor():
                     instrument.write_register(134,int(conflista[i+3]), functioncode = 6)
     
     print('Fim da emulacao!')
-    print('f = ', i)
     apagar()
 
-    instrument.write_register(682,0x0014)   # Deixar ele em modo operacional
+    instrument.write_register(682,0x0014, functioncode=6)   # Deixar ele em modo operacional
     
 
 # VENTOS #
