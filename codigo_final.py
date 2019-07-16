@@ -143,9 +143,9 @@ def peguei():
     elif tipo =="RIPPLE":
         historico = str(line+1) + ": " + tipo + ": Tempo: " + t + " Amplitude: " + a
     elif tipo =="RAJADA":
-        historico = str(line+1) + ": " + tipo + ": Tempo: " + t +"s Velocidade: " + v + "rpm"
+        historico = str(line+1) + ": " + tipo + ": Tempo: " + t +"s Velocidade: " + v + "m/s"
     elif tipo =="RAMPA":
-        historico = str(line+1) + ": " + tipo + ": Tempo: " + t +"s Velocidade: " + v + "rpm"
+        historico = str(line+1) + ": " + tipo + ": Tempo: " + t +"s Velocidade: " + v + "m/s"
     if line < 14:
         label = Label(root,text= historico, font=("arial",7)).place(x=25, y=330 + (count.get()*16))
 
