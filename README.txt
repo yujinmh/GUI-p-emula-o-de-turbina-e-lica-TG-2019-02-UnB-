@@ -1,23 +1,24 @@
 Code by: Matheus Henrique Dinato Menezes e Victor Yuji Sato
 
-Universidade de BrasÌlia
+Universidade de Bras√≠lia
 
-Trabalho de GraduaÁ„o 2019/02
-Tema: Desenvolvimento de Interface de ComunicaÁ„o Baseada no Protocolo Modbus
-para Conex„o de um Computador (PC) a um Inversor de FrequÍncia
+Trabalho de Gradua√ß√£o 2019/02
+Tema: Desenvolvimento de Interface de Comunica√ß√£o Baseada no Protocolo Modbus
+para Conex√£o de um Computador (PC) a um Inversor de Frequ√™ncia
 
-Orientador: LÈlio Ribeiro Soares J˙nior
+Orientador: L√©lio Ribeiro Soares J√∫nior
 
-O cÛdigo utiliza Python vers„o 3.7.0 para rodar. … possÌvel execut·-lo em plataformas Windows e Linux, utilizando o 
-comando 'py tg_interface.py'. … necess·rio instalar algumas bibliotecas para executar o cÛdigo, tais como: serial e
-minimalmodbus e tkinter (sendo o ˙ltimo um pacote padr„o de interface do Python).
+O c√≥digo utiliza Python vers√£o 3.7.0 para rodar. √â poss√≠vel execut√°-lo em plataformas Windows e Linux, utilizando o 
+comando 'py tg_interface.py'. √â necess√°rio instalar algumas bibliotecas para executar o c√≥digo, tais como: serial e
+minimalmodbus e tkinter (sendo o √∫ltimo um pacote padr√£o de interface do Python).
 
-A interface abrir· em uma nova janela apÛs a execuÁ„o do comando citado anteriormente. Nela, È possÌvel criar
-configuraÁıes de velocidades e duraÁıes de diferentes tipos de ventos prÈprogramados, salvar a configuraÁ„o criada
-pelo usu·rio em um arquivo .txt (no mesmo diretÛrio em que se encontra o arquivo .py do cÛdigo) e/ou carregar um .txt
-criado previamente com as configuraÁıes desejadas. 
+A interface abrir√° em uma nova janela ap√≥s a execu√ß√£o do comando citado anteriormente. Nela, √© poss√≠vel criar
+configura√ß√µes de velocidades e dura√ß√µes de diferentes tipos de ventos pr√©programados, salvar a configura√ß√£o criada
+pelo usu√°rio em um arquivo .txt (no mesmo diret√≥rio em que se encontra o arquivo .py do c√≥digo) e/ou carregar um .txt
+criado previamente com as configura√ß√µes desejadas. 
 
 Links:
 https://minimalmodbus.readthedocs.io/en/master/
 https://pypi.org/project/pyserial/
 https://docs.python.org/3/library/tkinter.html
+https://youtu.be/iO_rwWfcc_U (V√≠deo de teste de emula√ß√£o em execu√ß√£o. Par√¢metros e configura√ß√µes utilizadas na descri√ß√£o)
