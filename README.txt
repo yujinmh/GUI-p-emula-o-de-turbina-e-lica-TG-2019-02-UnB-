@@ -22,3 +22,6 @@ https://minimalmodbus.readthedocs.io/en/master/
 https://pypi.org/project/pyserial/
 https://docs.python.org/3/library/tkinter.html
 https://youtu.be/iO_rwWfcc_U (Vídeo de teste de emulação em execução. Parâmetros e configurações utilizadas na descrição)
+
+Contato:
+Victor - vyujisato@gmail.com
