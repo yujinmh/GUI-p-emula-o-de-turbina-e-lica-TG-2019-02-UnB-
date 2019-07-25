@@ -17,7 +17,7 @@ configurações de velocidades e durações de diferentes tipos de ventos prépr
 pelo usuário em um arquivo .txt (no mesmo diretório em que se encontra o arquivo .py do código) e/ou carregar um .txt
 criado previamente com as configurações desejadas. 
 
-Links:
+Links (em breve link para a monografia):
 https://minimalmodbus.readthedocs.io/en/master/
 https://pypi.org/project/pyserial/
 https://docs.python.org/3/library/tkinter.html
