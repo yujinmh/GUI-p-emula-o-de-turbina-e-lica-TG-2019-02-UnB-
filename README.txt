@@ -17,6 +17,8 @@ configurações de velocidades e durações de diferentes tipos de ventos prépr
 pelo usuário em um arquivo .txt (no mesmo diretório em que se encontra o arquivo .py do código) e/ou carregar um .txt
 criado previamente com as configurações desejadas. 
 
+Para utilizar o código deve-se instalar a biblioteca minimalmodbus (ver sequência de instalação no link abaixo). Verificar se a versão do python que está sendo utilizada possui a biblioteca Tkinter. E rodar o código no prompt utilizando py nome_do_código.py, ou clicando duas vezes nele (no Windows)
+
 Links (em breve link para a monografia):
 https://minimalmodbus.readthedocs.io/en/master/
 https://pypi.org/project/pyserial/
